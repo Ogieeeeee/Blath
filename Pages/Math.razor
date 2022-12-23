@@ -1,0 +1,30 @@
+﻿@page "/Math"
+@using Blath.Enums;
+@using Toolbelt.Blazor.SpeechSynthesis;
+@inject IGame Game;
+@inject SpeechSynthesis SpeechSynthesis
+
+@*<label>@Game.Number1 </label> + <label>@Game.Number2</label>*@
+<input @bind="Game.UserAnswer" @bind:event="oninput" @onkeydown="@Enter" type="number">
+<input type="submit" @onclick="Game.CheckUserAnswer" value="Submit">
+<br />
+<label>Score: @Game.Score</label>
+
+@code {
+    int userAnswer;
+    protected override void OnInitialized()
+    {
+        Game.Start();
+        SpeechSynthesis.SpeakAsync($"{Game.Number1} + {Game.Number2}");
+        base.OnInitialized();
+    }
+
+    public void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            Game.CheckUserAnswer();
+            SpeechSynthesis.SpeakAsync($"{Game.Number1} + {Game.Number2}");
+        }
+    }
+}
